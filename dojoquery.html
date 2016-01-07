@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>MyLibrary</title>
+	<script>
+
+	// Anonymous function - entry point
+(function () {
+    // $Dojo returns new Library object that hold our selector. Ex: $Dojo('.theme')
+    var $Dojo = function (params) {
+        return new library(params);
+    };
+     
+    var library = function (params) {
+        /* Get all elements in the document that matches a specified selector(s),
+        as a static NodeList object */
+        var selector = document.querySelectorAll(params),
+        count = 0;
+        
+        // Get NodeList object length
+        this.length = selector.length;
+         
+        // Store NodeList objects in form array of objects for method chaining
+        for (; count < this.length; count++) {
+            this[count] = selector[count];
+        }
+         
+        // Return as object
+        return params;        
+    };
+ 
+    // Assign our $Dojo object to global window object.
+    if(!window.$Dojo) {
+        window.$Dojo = $Dojo;
+        $Dojo.fn = library.prototype = {
+        	hide: function(){
+        		var len = this.length;
+        		while(len--){
+        			this[len].style.display = 'none';
+        		}
+        		return this;
+        	},
+        	show: function(){
+        		var len = this.length;
+        		while(len--){
+        			this[len].style.display = 'block';
+        		}
+        		return this;
+        	},
+        	
+        	html: function(val){
+        		var len = this.length;
+        		//setter
+        		if(val){
+        			while(len--){
+	        			this[len].innerHTML = val;
+	        			console.log(this[len]);
+	        		}
+	        		return this;
+	        	//getter
+        		}else{
+        			if(len > 1){
+	        			var getterObj = {};
+	        			while(len--){
+	        				getterObj[len] = this[len].innerHTML;
+	        				console.log(len);
+	        			}
+	        			return getterObj;
+	        		}
+	        		else{
+	        			return this[--len].innerHTML;
+	        		}
+        		}
+        	},
+        	click: function(callback){
+        		var len = this.length;
+        		while(len--){
+        			this[len].addEventListener('click',callback,false);
+        		}
+        		return this;
+        	},
+        	hover: function(callback1,callback2){
+        		var len = this.length;
+        		while(len--){
+        			this[len].addEventListener('mouseover',callback1,false);
+        			this[len].addEventListener('mouseout',callback2,false);
+        		}
+        		return this;
+        	},
+        	on: function(event,callback){
+        		var len = this.length;
+        		while(len--){
+        			if(document.addEventListener){
+        				this[len].addEventListener(event,callback,false);
+        			}
+        			else if(document.attachEvent){
+        				this[len].attachEvent('on' + event, callback);
+        			}
+        			else{
+        				this[len]['on' + event] = callback;
+        			}
+        		}
+        		return this;
+        	}
+
+        };
+
+    }//if(!window.$Dojo)
+})();
+
+	//demo
+	// $Dojo("#btn1").hide();
+	</script>
+</head>
+<body>
+	<button id = 'btn1'>button1</button>
+	<button id = 'btn2'>button2</button>
+	<div id = 'test'>hello</div>
+</body>
+</html>
